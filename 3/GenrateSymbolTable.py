@@ -3,9 +3,9 @@ FileData = open("H:\\SPCC\\3\\Program.txt", 'r')
 ListData = FileData.read().split('\n')
 mnemonic = ['AREG','BREG','CREG','ORIGIN','LTORG','ADD','SUB','MULT','DIV','COMP','MOVEM','MOVER','DS','DC', 'STOP', 'END']
 Address , Index = 0, 0
-SymbolTable = open('SymbolTable.txt','w')
-SymbolTable.write("{:<10}{:<15}{:<10}".format("Index","Symbol","Address")+'\n')
-SymbolSet = set()          
+print("{:<10}{:<10}{:<10}".format("Index","Symbol","Address"))
+SymbolSet = set()
+OutputList = []          
 for i in ListData:
     for j in i.split():
         if j == 'START':
@@ -18,6 +18,16 @@ for i in ListData:
             if j not in SymbolSet:
                 SymbolSet.add(j)
                 Index += 1
-                SymbolTable.write("{:<10}{:<15}{:<10}".format(Index,j,Address)+'\n')
+                OutputList.append([Index,j,Address])
+            else:
+                if 'DS' in i.split() or 'DC' in i.split():
+                    for k in OutputList:
+                        if j in k:
+                            Index = OutputList.index(k)
+                            OutputList[Index][-1] = Address        
     Address += 1
+
+for i in OutputList:
+    IndexVal, Symbol, CurrAddress = i
+    print("{:<10}{:<10}{:<10}".format(IndexVal,Symbol,CurrAddress))
  
