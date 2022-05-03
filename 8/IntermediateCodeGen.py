@@ -1,23 +1,34 @@
-Operator = ['+','-','/','*']
-for i in range(int(input('Enter Number Of Line: '))):
-    Expression = list(map(str, input('Enter Expression: ').strip().split()))
-    for i in range(len(Expression)-1):
-        if Expression[i+1] in Operator:
-            print("MOV R1 ", Expression[i])
-            print("MOV R2 ", Expression[i+2])
-            if Expression[i+1] == '+':
-                print("ADD R1, R2 ")
-            elif Expression[i+1] == '-':
-                print("SUB R1, R2 ")
-            elif Expression[i+1] == '*':
-                print("MULT R1, R2 ")
-            elif Expression[i+1] == '+':
-                print("DIV R1, R2 ")
-            else:
-                print('Please Enter Valid Expression')
+Expression = str(input("Enter Expression: "))
+post = []
+ExpGenList = []
+Precedence = {'+': 1, '-': 1, "*": 2, '/': 2}
+OperatorList = []
+for i in Expression:
+    if i.isalpha():
+        post.append(i)
+    elif not OperatorList or Precedence[i] > Precedence[OperatorList[-1]]:
+        OperatorList.append(i)
+    else:
+        y = OperatorList.pop()
+        post.append(y)
+        OperatorList.append(i)
+ReverseOpList = OperatorList[::-1]
+post.extend(ReverseOpList)
 
-# Enter Number Of Line: 1
-# Enter Expression: t =  a + b
-# MOV R1  a
-# MOV R2  b
-# ADD R1, R2
+i = 1
+for z in post:
+    if z.isalpha():
+        ExpGenList.append(z)
+    else:
+        right = ExpGenList.pop()
+        left = ExpGenList.pop()
+        print('t'+str(i), '=', left, z, right)
+        ExpGenList.append('t' + str(i))
+        i += 1
+
+#i/o
+# Enter Expression: A+B+C*D/S
+# t1 = A + B
+# t2 = C * D
+# t3 = t2 / S
+# t4 = t1 + t3
